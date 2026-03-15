@@ -1,0 +1,9 @@
+{
+  "name": "example-mcps",
+  "description": "Example MCP servers demonstrating HTTP (with OAuth) and stdio transports",
+  "version": "0.0.1",
+  "author": {
+    "name": "Dickson Tsai"
+  },
+  "license": "MIT"
+}

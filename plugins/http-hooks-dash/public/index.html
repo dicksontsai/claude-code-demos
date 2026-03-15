@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude Code Activity Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "SF Mono", "Cascadia Code", "Fira Code", "Consolas", monospace;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+
+    /* ── Header ─────────────────────────────────────────────── */
+    header {
+      background: #16213e;
+      border-bottom: 1px solid #0f3460;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-left h1 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+
+    .connection-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #888;
+      background: #0d1b2a;
+      padding: 4px 10px;
+      border-radius: 12px;
+      border: 1px solid #1a2a3e;
+    }
+
+    .connection-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #555;
+      transition: background 0.3s;
+    }
+
+    .connection-dot.connected {
+      background: #00e676;
+      box-shadow: 0 0 6px #00e67688;
+    }
+
+    .header-actions button {
+      background: #2a1a3e;
+      color: #cf6679;
+      border: 1px solid #3a2a4e;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .header-actions button:hover {
+      background: #3a2a4e;
+    }
+
+    /* ── Stats Row ──────────────────────────────────────────── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      padding: 16px 24px;
+    }
+
+    .stat-card {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #667;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .stat-card:nth-child(1) .stat-value { color: #bb86fc; }
+    .stat-card:nth-child(2) .stat-value { color: #00e676; }
+    .stat-card:nth-child(3) .stat-value { color: #64b5f6; }
+    .stat-card:nth-child(4) .stat-value { color: #ffab40; }
+
+    /* ── Event Feed ─────────────────────────────────────────── */
+    .feed-container {
+      padding: 0 24px 24px;
+    }
+
+    .feed-header {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #667;
+      margin-bottom: 10px;
+    }
+
+    .event-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: calc(100vh - 260px);
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+
+    .event-feed::-webkit-scrollbar { width: 6px; }
+    .event-feed::-webkit-scrollbar-track { background: #1a1a2e; }
+    .event-feed::-webkit-scrollbar-thumb { background: #0f3460; border-radius: 3px; }
+
+    .event-card {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 6px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      animation: slideIn 0.25s ease-out;
+      transition: border-color 0.2s;
+    }
+
+    .event-card:hover {
+      border-color: #1a4a7e;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .event-time {
+      font-size: 11px;
+      color: #556;
+      white-space: nowrap;
+      min-width: 70px;
+      padding-top: 2px;
+    }
+
+    .event-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .badge-PreToolUse        { background: #00e67622; color: #00e676; border: 1px solid #00e67644; }
+    .badge-PostToolUse       { background: #00bfa522; color: #00bfa5; border: 1px solid #00bfa544; }
+    .badge-PostToolUseFailure{ background: #ff525222; color: #ff5252; border: 1px solid #ff525244; }
+    .badge-UserPromptSubmit  { background: #bb86fc22; color: #bb86fc; border: 1px solid #bb86fc44; }
+    .badge-Stop              { background: #64b5f622; color: #64b5f6; border: 1px solid #64b5f644; }
+    .badge-SubagentStop      { background: #4fc3f722; color: #4fc3f7; border: 1px solid #4fc3f744; }
+    .badge-SubagentStart     { background: #29b6f622; color: #29b6f6; border: 1px solid #29b6f644; }
+    .badge-PermissionRequest { background: #ffd74022; color: #ffd740; border: 1px solid #ffd74044; }
+    .badge-Notification      { background: #ffab4022; color: #ffab40; border: 1px solid #ffab4044; }
+    .badge-TaskCompleted     { background: #f4849622; color: #f48496; border: 1px solid #f4849644; }
+    .badge-SessionStart      { background: #a5d6a722; color: #a5d6a7; border: 1px solid #a5d6a744; }
+    .badge-SessionEnd        { background: #ef9a9a22; color: #ef9a9a; border: 1px solid #ef9a9a44; }
+    .badge-PreCompact        { background: #ffe08222; color: #ffe082; border: 1px solid #ffe08244; }
+    .badge-PostCompact       { background: #fff59d22; color: #fff59d; border: 1px solid #fff59d44; }
+    .badge-InstructionsLoaded{ background: #ce93d822; color: #ce93d8; border: 1px solid #ce93d844; }
+    .badge-ConfigChange      { background: #80cbc422; color: #80cbc4; border: 1px solid #80cbc444; }
+    .badge-Elicitation       { background: #ffcc0222; color: #ffcc02; border: 1px solid #ffcc0244; }
+    .badge-ElicitationResult { background: #ffa72622; color: #ffa726; border: 1px solid #ffa72644; }
+    .badge-TeammateIdle      { background: #b0bec522; color: #b0bec5; border: 1px solid #b0bec544; }
+    .badge-WorktreeRemove    { background: #ff8a6522; color: #ff8a65; border: 1px solid #ff8a6544; }
+    .badge-default           { background: #44444422; color: #888;    border: 1px solid #44444444; }
+
+    .event-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .event-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .event-session {
+      font-size: 10px;
+      color: #556;
+    }
+
+    .event-summary {
+      font-size: 13px;
+      color: #ccc;
+      margin-top: 4px;
+    }
+
+    .event-payload {
+      font-size: 11px;
+      color: #556;
+      margin-top: 6px;
+      background: #0d1b2a;
+      padding: 8px 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #445;
+    }
+
+    .empty-state .icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .empty-state p {
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .empty-state code {
+      background: #0d1b2a;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+
+    /* ── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 700px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-left">
+      <h1>Claude Code Activity Dashboard</h1>
+      <div class="connection-badge">
+        <span class="connection-dot" id="connDot"></span>
+        <span id="connLabel">Connecting...</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button onclick="clearEvents()">Clear</button>
+    </div>
+  </header>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Total Events</div>
+      <div class="stat-value" id="statTotal">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Tool Uses</div>
+      <div class="stat-value" id="statToolCalls">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Prompts</div>
+      <div class="stat-value" id="statModelResponses">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Sessions</div>
+      <div class="stat-value" id="statSessions">0</div>
+    </div>
+  </div>
+
+  <div class="feed-container">
+    <div class="feed-header">Live Event Feed</div>
+    <div class="event-feed" id="eventFeed">
+      <div class="empty-state" id="emptyState">
+        <div class="icon">&#x2022; &#x2022; &#x2022;</div>
+        <p>No events yet.<br>
+          Send a test event with <code>./test-hook.sh</code><br>
+          or start using Claude Code with hooks configured.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── State ───────────────────────────────────────────────
+    let events = [];
+    let ws = null;
+
+    // ── DOM refs ────────────────────────────────────────────
+    const feed        = document.getElementById("eventFeed");
+    const emptyState  = document.getElementById("emptyState");
+    const connDot     = document.getElementById("connDot");
+    const connLabel   = document.getElementById("connLabel");
+    const statTotal          = document.getElementById("statTotal");
+    const statToolCalls      = document.getElementById("statToolCalls");
+    const statModelResponses = document.getElementById("statModelResponses");
+    const statSessions       = document.getElementById("statSessions");
+
+    // ── WebSocket ───────────────────────────────────────────
+    function connect() {
+      const protocol = location.protocol === "https:" ? "wss:" : "ws:";
+      ws = new WebSocket(protocol + "//" + location.host);
+
+      ws.addEventListener("open", () => {
+        connDot.classList.add("connected");
+        connLabel.textContent = "Connected";
+      });
+
+      ws.addEventListener("close", () => {
+        connDot.classList.remove("connected");
+        connLabel.textContent = "Disconnected";
+        setTimeout(connect, 2000);
+      });
+
+      ws.addEventListener("message", (msg) => {
+        const data = JSON.parse(msg.data);
+        if (data.type === "new_event") {
+          addEvent(data.event);
+        } else if (data.type === "events_cleared") {
+          events = [];
+          renderFeed();
+          updateLocalStats();
+        }
+      });
+    }
+
+    // ── Rendering ───────────────────────────────────────────
+    function badgeClass(hookName) {
+      const known = [
+        "PreToolUse", "PostToolUse", "PostToolUseFailure",
+        "UserPromptSubmit", "Stop", "SubagentStop", "SubagentStart",
+        "PermissionRequest", "Notification", "TaskCompleted",
+        "SessionStart", "SessionEnd", "PreCompact", "PostCompact",
+        "InstructionsLoaded", "ConfigChange", "Elicitation", "ElicitationResult",
+        "TeammateIdle", "WorktreeRemove"
+      ];
+      return known.includes(hookName) ? "badge-" + hookName : "badge-default";
+    }
+
+    function formatTime(isoString) {
+      if (!isoString) return "--:--:--";
+      const d = new Date(isoString);
+      return d.toLocaleTimeString([], { hour12: false });
+    }
+
+    function truncate(str, n) {
+      return str && str.length > n ? str.slice(0, n) + "…" : (str || "");
+    }
+
+    function summarize(event) {
+      const h = event.hook_event_name;
+      if ((h === "PreToolUse" || h === "PostToolUse") && event.tool_name) {
+        return event.tool_name;
+      }
+      if (h === "PostToolUseFailure" && event.tool_name) {
+        return event.tool_name + (event.error ? ": " + truncate(event.error, 60) : "");
+      }
+      if (h === "UserPromptSubmit" && event.prompt) {
+        return truncate(event.prompt, 80);
+      }
+      if (h === "Stop" || h === "SubagentStop") {
+        return truncate(event.last_assistant_message, 80) || h;
+      }
+      if (h === "SubagentStart") {
+        return event.agent_type ? "type: " + event.agent_type : h;
+      }
+      if (h === "PermissionRequest" && event.tool_name) {
+        return event.tool_name;
+      }
+      if (h === "Notification") {
+        return event.message || event.title || h;
+      }
+      if (h === "TaskCompleted") {
+        return event.task_subject || h;
+      }
+      if (h === "SessionStart") {
+        return event.source ? "source: " + event.source : h;
+      }
+      if (h === "SessionEnd") {
+        return event.reason ? "reason: " + event.reason : h;
+      }
+      if (h === "PreCompact" || h === "PostCompact") {
+        return event.trigger ? "trigger: " + event.trigger : h;
+      }
+      if (h === "InstructionsLoaded") {
+        return event.file_path ? event.file_path.split("/").pop() : h;
+      }
+      if (h === "ConfigChange") {
+        return event.source ? event.source : h;
+      }
+      if (h === "Elicitation" || h === "ElicitationResult") {
+        return event.mcp_server_name ? "mcp: " + event.mcp_server_name : h;
+      }
+      if (h === "TeammateIdle") {
+        return event.teammate_name ? event.teammate_name : h;
+      }
+      if (h === "WorktreeRemove") {
+        return event.worktree_path ? event.worktree_path.split("/").pop() : h;
+      }
+      return h || event.type || "Event";
+    }
+
+    function createEventCard(event) {
+      const card = document.createElement("div");
+      card.className = "event-card";
+
+      const time = event.receivedAt || event.timestamp || "";
+      const type = event.hook_event_name || event.type || "unknown";
+
+      // Build payload preview - omit type/timestamp/id/receivedAt to reduce noise
+      const preview = Object.assign({}, event);
+      delete preview.id;
+      delete preview.receivedAt;
+      delete preview.type;
+      delete preview.timestamp;
+      const payloadStr = Object.keys(preview).length > 0
+        ? JSON.stringify(preview, null, 2)
+        : "";
+
+      const sessionId = event.session_id ? escapeHtml(event.session_id) : "";
+      const matchValue = event.match_value != null
+        ? '<div class="event-summary" style="color:#667;font-size:11px">match_value: ' + escapeHtml(String(event.match_value)) + '</div>'
+        : "";
+
+      card.innerHTML =
+        '<div class="event-time">' + formatTime(time) + '</div>' +
+        '<div class="event-body">' +
+          '<div class="event-header">' +
+            '<span class="event-badge ' + badgeClass(type) + '">' + type + '</span>' +
+            (sessionId ? '<span class="event-session">' + sessionId + '</span>' : '') +
+          '</div>' +
+          '<div class="event-summary">' + summarize(event) + '</div>' +
+          matchValue +
+          (payloadStr ? '<div class="event-payload">' + escapeHtml(payloadStr) + '</div>' : '') +
+        '</div>';
+
+      return card;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function renderFeed() {
+      feed.innerHTML = "";
+      if (events.length === 0) {
+        feed.appendChild(emptyState);
+        return;
+      }
+      events.forEach((e) => feed.appendChild(createEventCard(e)));
+    }
+
+    function addEvent(event) {
+      events.unshift(event);
+      if (events.length === 1 && feed.contains(emptyState)) {
+        feed.removeChild(emptyState);
+      }
+      const card = createEventCard(event);
+      feed.insertBefore(card, feed.firstChild);
+      updateLocalStats();
+    }
+
+    function updateLocalStats() {
+      statTotal.textContent = events.length;
+      statToolCalls.textContent = events.filter((e) =>
+        e.hook_event_name === "PreToolUse" || e.hook_event_name === "PostToolUse" || e.hook_event_name === "PostToolUseFailure"
+      ).length;
+      statModelResponses.textContent = events.filter((e) =>
+        e.hook_event_name === "UserPromptSubmit"
+      ).length;
+      const sessions = new Set(events.map((e) => e.session_id).filter(Boolean));
+      statSessions.textContent = sessions.size;
+    }
+
+    // ── Actions ─────────────────────────────────────────────
+    function clearEvents() {
+      fetch("/api/events", { method: "DELETE" })
+        .then((r) => r.json())
+        .then(() => {
+          events = [];
+          renderFeed();
+          updateLocalStats();
+        })
+        .catch((err) => console.error("Failed to clear:", err));
+    }
+
+    // ── Init ────────────────────────────────────────────────
+    function init() {
+      // Load existing events
+      fetch("/api/events")
+        .then((r) => r.json())
+        .then((data) => {
+          events = data;
+          renderFeed();
+          updateLocalStats();
+        })
+        .catch(() => {});
+
+      connect();
+    }
+
+    init();
+  </script>
+</body>
+</html>

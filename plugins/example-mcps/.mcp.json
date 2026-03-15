@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "example-http-oauth": {
+      "type": "http",
+      "url": "http://localhost:9876/mcp"
+    },
+    "example-stdio": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "${CLAUDE_PLUGIN_ROOT}/stdio-server",
+        "python",
+        "server.py"
+      ]
+    }
+  }
+}

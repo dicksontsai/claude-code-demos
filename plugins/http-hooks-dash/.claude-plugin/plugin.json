@@ -1,0 +1,9 @@
+{
+  "name": "http-hooks-dash",
+  "description": "Live dashboard for monitoring Claude Code activity in localhost:3001 via HTTP hooks",
+  "version": "0.0.2",
+  "author": {
+    "name": "Dickson Tsai"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marketplace</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+        Ubuntu, Cantarell, sans-serif;
+      background: #f0f4f5;
+      color: #1a1a1a;
+      line-height: 1.5;
+    }
+
+    /* ── Header ─────────────────────────────────────── */
+    header {
+      background: #0f766e;
+      color: #fff;
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .search-bar {
+      position: relative;
+    }
+
+    .search-bar input {
+      width: 280px;
+      padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      background: rgba(255,255,255,.15);
+      color: #fff;
+      outline: none;
+      transition: background .2s;
+    }
+
+    .search-bar input::placeholder {
+      color: rgba(255,255,255,.6);
+    }
+
+    .search-bar input:focus {
+      background: rgba(255,255,255,.25);
+    }
+
+    .search-bar svg {
+      position: absolute;
+      left: 0.6rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      stroke: rgba(255,255,255,.6);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .btn-primary {
+      background: #fff;
+      color: #0f766e;
+      border: none;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .2s;
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover {
+      opacity: .9;
+    }
+
+    /* ── Category Filter ────────────────────────────── */
+    .categories {
+      display: flex;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      overflow-x: auto;
+      background: #fff;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .cat-btn {
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .15s;
+      color: #475569;
+    }
+
+    .cat-btn:hover {
+      border-color: #0f766e;
+      color: #0f766e;
+    }
+
+    .cat-btn.active {
+      background: #0f766e;
+      color: #fff;
+      border-color: #0f766e;
+    }
+
+    /* ── Listings Grid ──────────────────────────────── */
+    main {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+      transition: transform .2s, box-shadow .2s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.1);
+    }
+
+    .card-img {
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: rgba(255,255,255,.7);
+    }
+
+    .card-img svg {
+      width: 48px;
+      height: 48px;
+      stroke: rgba(255,255,255,.7);
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .card-body {
+      padding: 1rem 1.25rem 1.25rem;
+    }
+
+    .card-category {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-price {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #0f766e;
+    }
+
+    .card-date {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      margin-top: 0.4rem;
+    }
+
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4rem 1rem;
+      color: #94a3b8;
+      font-size: 1.1rem;
+    }
+
+    /* ── Modal ──────────────────────────────────────── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      padding: 2rem;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,.2);
+      animation: slideUp .25s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal h2 {
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #94a3b8;
+      line-height: 1;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      color: #475569;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: #0f766e;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 0.7rem;
+      background: #0f766e;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+      margin-top: 0.5rem;
+    }
+
+    .btn-submit:hover {
+      background: #0d6560;
+    }
+
+    /* ── Responsive ─────────────────────────────────── */
+    @media (max-width: 640px) {
+      header {
+        padding: 0 1rem;
+      }
+      .search-bar input {
+        width: 160px;
+      }
+      .categories {
+        padding: 0.75rem 1rem;
+      }
+      main {
+        padding: 0 1rem;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo">Marketplace</div>
+    <div class="header-actions">
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="search" placeholder="Search listings..." />
+      </div>
+      <button class="btn-primary" id="openModal">+ Post a Listing</button>
+    </div>
+  </header>
+
+  <!-- Category Filter -->
+  <nav class="categories" id="categories">
+    <button class="cat-btn active" data-cat="All">All</button>
+    <button class="cat-btn" data-cat="Electronics">Electronics</button>
+    <button class="cat-btn" data-cat="Furniture">Furniture</button>
+    <button class="cat-btn" data-cat="Vehicles">Vehicles</button>
+    <button class="cat-btn" data-cat="Clothing">Clothing</button>
+    <button class="cat-btn" data-cat="Services">Services</button>
+  </nav>
+
+  <!-- Listings Grid -->
+  <main>
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <!-- New Listing Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <button class="modal-close" id="closeModal">&times;</button>
+      <h2>Post a New Listing</h2>
+      <form id="listingForm">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" id="title" required />
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="price">Price ($)</label>
+            <input type="number" id="price" min="0" step="0.01" required />
+          </div>
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" required>
+              <option value="">Select...</option>
+              <option>Electronics</option>
+              <option>Furniture</option>
+              <option>Vehicles</option>
+              <option>Clothing</option>
+              <option>Services</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn-submit">Publish Listing</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const grid = document.getElementById('grid');
+    const searchInput = document.getElementById('search');
+    const categoryNav = document.getElementById('categories');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const listingForm = document.getElementById('listingForm');
+
+    let allListings = [];
+    let activeCategory = 'All';
+
+    // Category icons (simple SVG paths)
+    const categoryIcons = {
+      Electronics:
+        '<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+      Furniture:
+        '<svg viewBox="0 0 24 24"><path d="M20 9V6a2 2 0 00-2-2H6a2 2 0 00-2 2v3"/><path d="M2 11v5a2 2 0 002 2h16a2 2 0 002-2v-5a2 2 0 00-2-2H4a2 2 0 00-2 2z"/><line x1="4" y1="18" x2="4" y2="21"/><line x1="20" y1="18" x2="20" y2="21"/></svg>',
+      Vehicles:
+        '<svg viewBox="0 0 24 24"><path d="M5 17h14M5 17a2 2 0 01-2-2V9a2 2 0 012-2h1l2-3h8l2 3h1a2 2 0 012 2v6a2 2 0 01-2 2M5 17l-1 3m15-3l1 3"/><circle cx="7.5" cy="14" r="1.5"/><circle cx="16.5" cy="14" r="1.5"/></svg>',
+      Clothing:
+        '<svg viewBox="0 0 24 24"><path d="M6 2l3 3-3 6h12l-3-6 3-3"/><path d="M6 11v9a2 2 0 002 2h8a2 2 0 002-2v-9"/></svg>',
+      Services:
+        '<svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>',
+    };
+
+    function formatPrice(price) {
+      return price.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      });
+    }
+
+    function formatDate(dateStr) {
+      const d = new Date(dateStr + 'T00:00:00');
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    function renderListings(listings) {
+      if (listings.length === 0) {
+        grid.innerHTML = '<div class="no-results">No listings found.</div>';
+        return;
+      }
+
+      grid.innerHTML = listings
+        .map(
+          (l) => `
+        <a href="listing.html?id=${l.id}" class="card">
+          <div class="card-img" style="background:${l.color}">
+            ${categoryIcons[l.category] || ''}
+          </div>
+          <div class="card-body">
+            <div class="card-category" style="color:${l.color}">${l.category}</div>
+            <div class="card-title">${l.title}</div>
+            <div class="card-price">${formatPrice(l.price)}</div>
+            <div class="card-date">Posted ${formatDate(l.date)}</div>
+          </div>
+        </a>`
+        )
+        .join('');
+    }
+
+    function applyFilters() {
+      let filtered = allListings;
+
+      if (activeCategory !== 'All') {
+        filtered = filtered.filter((l) => l.category === activeCategory);
+      }
+
+      const query = searchInput.value.toLowerCase().trim();
+      if (query) {
+        filtered = filtered.filter(
+          (l) =>
+            l.title.toLowerCase().includes(query) ||
+            l.description.toLowerCase().includes(query)
+        );
+      }
+
+      renderListings(filtered);
+    }
+
+    // Fetch listings
+    async function loadListings() {
+      const res = await fetch('/api/listings');
+      allListings = await res.json();
+      applyFilters();
+    }
+
+    // Category buttons
+    categoryNav.addEventListener('click', (e) => {
+      const btn = e.target.closest('.cat-btn');
+      if (!btn) return;
+      categoryNav.querySelectorAll('.cat-btn').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeCategory = btn.dataset.cat;
+      applyFilters();
+    });
+
+    // Search
+    searchInput.addEventListener('input', applyFilters);
+
+    // Modal open/close
+    document.getElementById('openModal').addEventListener('click', () => {
+      modalOverlay.classList.add('open');
+    });
+
+    document.getElementById('closeModal').addEventListener('click', () => {
+      modalOverlay.classList.remove('open');
+    });
+
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) modalOverlay.classList.remove('open');
+    });
+
+    // Submit new listing
+    listingForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = {
+        title: document.getElementById('title').value,
+        description: document.getElementById('description').value,
+        price: document.getElementById('price').value,
+        category: document.getElementById('category').value,
+      };
+
+      await fetch('/api/listings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      listingForm.reset();
+      modalOverlay.classList.remove('open');
+      loadListings();
+    });
+
+    // Init
+    loadListings();
+  </script>
+</body>
+</html>

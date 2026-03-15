@@ -1,0 +1,13 @@
+{
+  "worktree": {
+    "symlinkDirectories": [
+      "node_modules"
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Edit(packages/)",
+      "Write(packages/)"
+    ]
+  }
+}

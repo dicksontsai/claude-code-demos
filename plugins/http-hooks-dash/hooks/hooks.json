@@ -1,0 +1,67 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {"hooks": [{ "type": "http", "url": "http://localhost:3001/hooks", "timeout": 5000 }]}
+    ],
+    "PostToolUse": [
+      {"hooks": [{ "type": "http", "url": "http://localhost:3001/hooks", "timeout": 5000 }]}
+    ],
+    "PostToolUseFailure": [
+      {"hooks": [{ "type": "http", "url": "http://localhost:3001/hooks", "timeout": 5000 }]}
+    ],
+    "Stop": [
+      {"hooks": [{ "type": "http", "url": "http://localhost:3001/hooks", "timeout": 5000 }]}
+    ],
+    "SubagentStop": [
+      {"hooks": [{ "type": "http", "url": "http://localhost:3001/hooks", "timeout": 5000 }]}
+    ],
+    "TaskCompleted": [
+      {"hooks": [{ "type": "http", "url": "http://localhost:3001/hooks", "timeout": 5000 }]}
+    ],
+    "UserPromptSubmit": [
+      {"hooks": [{ "type": "http", "url": "http://localhost:3001/hooks", "timeout": 5000 }]}
+    ],
+    "PermissionRequest": [
+      {"hooks": [{ "type": "http", "url": "http://localhost:3001/hooks", "timeout": 5000 }]}
+    ],
+    "Notification": [
+      {"hooks": [{ "type": "http", "url": "http://localhost:3001/hooks", "timeout": 5000 }]}
+    ],
+    "SessionStart": [
+      {"hooks":[{ "type": "command", "command": "cat | curl -s -X POST http://localhost:3001/hooks -H 'Content-Type: application/json' -d @- > /dev/null 2>&1" }]}
+    ],
+    "SessionEnd": [
+      {"hooks":[{ "type": "command", "command": "cat | curl -s -X POST http://localhost:3001/hooks -H 'Content-Type: application/json' -d @- > /dev/null 2>&1" }]}
+    ],
+    "SubagentStart": [
+      {"hooks":[{ "type": "command", "command": "cat | curl -s -X POST http://localhost:3001/hooks -H 'Content-Type: application/json' -d @- > /dev/null 2>&1" }]}
+    ],
+    "PreCompact": [
+      {"hooks":[{ "type": "command", "command": "cat | curl -s -X POST http://localhost:3001/hooks -H 'Content-Type: application/json' -d @- > /dev/null 2>&1" }]}
+    ],
+    "PostCompact": [
+      {"hooks":[{ "type": "command", "command": "cat | curl -s -X POST http://localhost:3001/hooks -H 'Content-Type: application/json' -d @- > /dev/null 2>&1" }]}
+    ],
+    "InstructionsLoaded": [
+      {"hooks":[{ "type": "command", "command": "cat | curl -s -X POST http://localhost:3001/hooks -H 'Content-Type: application/json' -d @- > /dev/null 2>&1" }]}
+    ],
+    "ConfigChange": [
+      {"hooks":[{ "type": "command", "command": "cat | curl -s -X POST http://localhost:3001/hooks -H 'Content-Type: application/json' -d @- > /dev/null 2>&1" }]}
+    ],
+    "Elicitation": [
+      {"hooks":[{ "type": "command", "command": "cat | curl -s -X POST http://localhost:3001/hooks -H 'Content-Type: application/json' -d @- > /dev/null 2>&1" }]}
+    ],
+    "ElicitationResult": [
+      {"hooks":[{ "type": "command", "command": "cat | curl -s -X POST http://localhost:3001/hooks -H 'Content-Type: application/json' -d @- > /dev/null 2>&1" }]}
+    ],
+    "TeammateIdle": [
+      {"hooks":[{ "type": "command", "command": "cat | curl -s -X POST http://localhost:3001/hooks -H 'Content-Type: application/json' -d @- > /dev/null 2>&1" }]}
+    ],
+    "WorktreeCreate": [
+      {"hooks":[{ "type": "command", "command": "cat | curl -s -X POST http://localhost:3001/hooks -H 'Content-Type: application/json' -d @- > /dev/null 2>&1" }]}
+    ],
+    "WorktreeRemove": [
+      {"hooks":[{ "type": "command", "command": "cat | curl -s -X POST http://localhost:3001/hooks -H 'Content-Type: application/json' -d @- > /dev/null 2>&1" }]}
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "dickson-cc-demo-plugins",
+  "owner": {
+    "name": "Dickson Tsai"
+  },
+  "plugins": [
+    {
+      "name": "http-hooks-dash",
+      "source": "./plugins/http-hooks-dash"
+    },
+    {
+      "name": "example-mcps",
+      "source": "./plugins/example-mcps"
+    }
+  ]
+}

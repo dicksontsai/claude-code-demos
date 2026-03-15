@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Listing — Marketplace</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+        Ubuntu, Cantarell, sans-serif;
+      background: #f0f4f5;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    /* ── Header ─────────────────────────────────────── */
+    header {
+      background: #0f766e;
+      color: #fff;
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      opacity: 0.85;
+      transition: opacity .2s;
+    }
+
+    .back-link:hover {
+      opacity: 1;
+    }
+
+    .back-link svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── Main Content ──────────────────────────────── */
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .listing-card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+
+    .listing-image {
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .listing-image svg {
+      width: 72px;
+      height: 72px;
+      stroke: rgba(255,255,255,.7);
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .listing-content {
+      padding: 2rem 2.5rem 2.5rem;
+    }
+
+    .listing-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .listing-category {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      color: #fff;
+    }
+
+    .listing-date {
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+
+    .listing-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.3px;
+    }
+
+    .listing-price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0f766e;
+      margin-bottom: 1.5rem;
+    }
+
+    .listing-description {
+      font-size: 1.05rem;
+      color: #475569;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+      white-space: pre-wrap;
+    }
+
+    .listing-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-contact {
+      background: #0f766e;
+      color: #fff;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .btn-contact:hover {
+      background: #0d6560;
+    }
+
+    .btn-back {
+      background: #fff;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+      padding: 0.75rem 2rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color .2s, color .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-back:hover {
+      border-color: #0f766e;
+      color: #0f766e;
+    }
+
+    /* ── Loading / Error States ────────────────────── */
+    .state-message {
+      text-align: center;
+      padding: 6rem 2rem;
+      color: #94a3b8;
+      font-size: 1.1rem;
+    }
+
+    .state-message.error {
+      color: #dc2626;
+    }
+
+    /* ── Responsive ─────────────────────────────────── */
+    @media (max-width: 640px) {
+      header {
+        padding: 0 1rem;
+      }
+      .container {
+        padding: 0 1rem;
+        margin: 1rem auto;
+      }
+      .listing-image {
+        height: 200px;
+      }
+      .listing-content {
+        padding: 1.5rem;
+      }
+      .listing-title {
+        font-size: 1.4rem;
+      }
+      .listing-actions {
+        flex-direction: column;
+      }
+      .btn-contact, .btn-back {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <a href="/" class="logo">Marketplace</a>
+    <a href="/" class="back-link">
+      <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Back to listings
+    </a>
+  </header>
+
+  <div class="container">
+    <div id="content">
+      <div class="state-message">Loading listing...</div>
+    </div>
+  </div>
+
+  <script>
+    const categoryIcons = {
+      Electronics:
+        '<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+      Furniture:
+        '<svg viewBox="0 0 24 24"><path d="M20 9V6a2 2 0 00-2-2H6a2 2 0 00-2 2v3"/><path d="M2 11v5a2 2 0 002 2h16a2 2 0 002-2v-5a2 2 0 00-2-2H4a2 2 0 00-2 2z"/><line x1="4" y1="18" x2="4" y2="21"/><line x1="20" y1="18" x2="20" y2="21"/></svg>',
+      Vehicles:
+        '<svg viewBox="0 0 24 24"><path d="M5 17h14M5 17a2 2 0 01-2-2V9a2 2 0 012-2h1l2-3h8l2 3h1a2 2 0 012 2v6a2 2 0 01-2 2M5 17l-1 3m15-3l1 3"/><circle cx="7.5" cy="14" r="1.5"/><circle cx="16.5" cy="14" r="1.5"/></svg>',
+      Clothing:
+        '<svg viewBox="0 0 24 24"><path d="M6 2l3 3-3 6h12l-3-6 3-3"/><path d="M6 11v9a2 2 0 002 2h8a2 2 0 002-2v-9"/></svg>',
+      Services:
+        '<svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>',
+    };
+
+    function formatPrice(price) {
+      return price.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      });
+    }
+
+    function formatDate(dateStr) {
+      const d = new Date(dateStr + 'T00:00:00');
+      return d.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    }
+
+    async function loadListing() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      const content = document.getElementById('content');
+
+      if (!id) {
+        content.innerHTML = '<div class="state-message error">No listing ID provided.</div>';
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/listings/${id}`);
+
+        if (!res.ok) {
+          content.innerHTML = '<div class="state-message error">Listing not found.</div>';
+          return;
+        }
+
+        const listing = await res.json();
+
+        document.title = `${listing.title} — Marketplace`;
+
+        content.innerHTML = `
+          <div class="listing-card">
+            <div class="listing-image" style="background:${listing.color}">
+              ${categoryIcons[listing.category] || ''}
+            </div>
+            <div class="listing-content">
+              <div class="listing-meta">
+                <span class="listing-category" style="background:${listing.color}">
+                  ${listing.category}
+                </span>
+                <span class="listing-date">Posted ${formatDate(listing.date)}</span>
+              </div>
+              <h1 class="listing-title">${listing.title}</h1>
+              <div class="listing-price">${formatPrice(listing.price)}</div>
+              <div class="listing-description">${listing.description}</div>
+              <div class="listing-actions">
+                <button class="btn-contact" onclick="alert('Contact feature coming soon!')">Contact Seller</button>
+                <a href="/" class="btn-back">Back to Listings</a>
+              </div>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        content.innerHTML = '<div class="state-message error">Failed to load listing. Is the server running?</div>';
+      }
+    }
+
+    loadListing();
+  </script>
+</body>
+</html>

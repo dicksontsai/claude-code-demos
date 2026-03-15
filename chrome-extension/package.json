@@ -1,0 +1,13 @@
+{
+  "name": "marketplace-demo",
+  "version": "1.0.0",
+  "description": "A classifieds marketplace web app — demo project for the Claude Code + Chrome tutorial",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}
