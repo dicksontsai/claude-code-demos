@@ -1,6 +1,6 @@
 # Marketplace — Claude Code + Chrome Tutorial Demo
 
-A marketplace web app built to demo **Claude Code + Claude Chrome Extension**. ([YouTube tutorial](https://studio.youtube.com/video/OxukBPhQZY4/edit))
+A marketplace web app built to demo **Claude Code + Claude Chrome Extension**. ([YouTube tutorial](https://www.youtube.com/watch?v=OxukBPhQZY4))
 
 ## Prerequisites
 
