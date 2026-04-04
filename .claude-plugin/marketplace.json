@@ -11,6 +11,10 @@
     {
       "name": "example-mcps",
       "source": "./plugins/example-mcps"
+    },
+    {
+      "name": "caveman-output-style",
+      "source": "./plugins/caveman-output-style"
     }
   ]
 }
