@@ -3,6 +3,7 @@
   "owner": {
     "name": "Dickson Tsai"
   },
+  "allowCrossMarketplaceDependenciesOn": ["plugin-dependency-example"],
   "plugins": [
     {
       "name": "http-hooks-dash",
@@ -15,6 +16,10 @@
     {
       "name": "caveman-output-style",
       "source": "./plugins/caveman-output-style"
+    },
+    {
+      "name": "dependency-demo",
+      "source": "./plugins/dependency-demo"
     }
   ]
 }

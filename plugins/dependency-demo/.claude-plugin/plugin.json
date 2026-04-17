@@ -1,0 +1,16 @@
+{
+  "name": "dependency-demo",
+  "version": "1.0.0",
+  "description": "Demonstrates a cross-marketplace plugin dependency on greeting-helper",
+  "author": {
+    "name": "Dickson Tsai"
+  },
+  "license": "MIT",
+  "dependencies": [
+    {
+      "name": "greeting-helper",
+      "marketplace": "plugin-dependency-example",
+      "version": "~1.0.0"
+    }
+  ]
+}

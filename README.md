@@ -11,6 +11,7 @@ Companion repo for my unofficial Claude Code YouTube tutorial series. Each direc
 | [`plugins/example-mcps/`](./plugins/example-mcps/) | MCP Servers | Example MCP servers — HTTP with OAuth and stdio with Python |
 | [`worktrees-demo/`](./worktrees-demo/) | Worktrees | Work on multiple features in parallel using Claude Code's worktrees feature, with Excalidraw as the demo project |
 | [`plugins/caveman-output-style/`](./plugins/caveman-output-style/) | Output Styles | A fun caveman output style plugin — few word, result first, grunt good |
+| [`plugins/dependency-demo/`](./plugins/dependency-demo/) | Plugin Dependencies | A plugin that depends on another plugin from a [separate marketplace](https://github.com/dicksontsai/plugin-dependency-example) |
 
 ## Plugin Marketplace
 
