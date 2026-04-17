@@ -20,6 +20,10 @@
     {
       "name": "dependency-demo",
       "source": "./plugins/dependency-demo"
+    },
+    {
+      "name": "dependency-demo-broken",
+      "source": "./plugins/dependency-demo-broken"
     }
   ]
 }

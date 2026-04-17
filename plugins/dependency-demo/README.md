@@ -20,3 +20,6 @@ automatically.
 
 You should now have both `/greet` (from the dependency) and `/greet-loudly`
 (from this plugin).
+
+For an example of an unsatisfied version constraint, see
+[`dependency-demo-broken`](../dependency-demo-broken/).

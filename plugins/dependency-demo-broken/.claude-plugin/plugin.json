@@ -1,0 +1,16 @@
+{
+  "name": "dependency-demo-broken",
+  "version": "1.0.0",
+  "description": "Intentionally broken: requires greeting-helper ~2.0.0, which does not exist",
+  "author": {
+    "name": "Dickson Tsai"
+  },
+  "license": "MIT",
+  "dependencies": [
+    {
+      "name": "greeting-helper",
+      "marketplace": "plugin-dependency-example",
+      "version": "~2.0.0"
+    }
+  ]
+}
