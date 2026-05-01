@@ -1,0 +1,8 @@
+{
+  "name": "vision-model-skill",
+  "version": "0.1.0",
+  "description": "Skill for building, training, or fine-tuning a computer-vision model — classification, detection, or zero-shot — for non-technical users. Ports anthropic-experimental/vision-model-skill into a plugin.",
+  "author": {
+    "name": "Dickson Tsai"
+  }
+}
