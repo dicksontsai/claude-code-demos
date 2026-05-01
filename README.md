@@ -12,6 +12,7 @@ Companion repo for my unofficial Claude Code YouTube tutorial series. Each direc
 | [`worktrees-demo/`](./worktrees-demo/) | Worktrees | Work on multiple features in parallel using Claude Code's worktrees feature, with Excalidraw as the demo project |
 | [`plugins/caveman-output-style/`](./plugins/caveman-output-style/) | Output Styles | A fun caveman output style plugin — few word, result first, grunt good |
 | [`plugins/dependency-demo/`](./plugins/dependency-demo/) | Plugin Dependencies | A plugin that depends on another plugin from a [separate marketplace](https://github.com/dicksontsai/plugin-dependency-example) |
+| [`plugins/vision-model-skill/`](./plugins/vision-model-skill/) | Skills | A Claude Code plugin port of [anthropic-experimental/vision-model-skill](https://github.com/anthropic-experimental/vision-model-skill) — guides non-technical users from "I want a model that does X" to a working classifier or detector |
 
 ## Plugin Marketplace
 

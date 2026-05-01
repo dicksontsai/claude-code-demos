@@ -24,6 +24,10 @@
     {
       "name": "dependency-demo-broken",
       "source": "./plugins/dependency-demo-broken"
+    },
+    {
+      "name": "vision-model-skill",
+      "source": "./plugins/vision-model-skill"
     }
   ]
 }
